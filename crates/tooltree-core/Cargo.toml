@@ -1,0 +1,15 @@
+[package]
+name = "tooltree-core"
+version = "0.1.0"
+edition = "2024"
+license = "Apache-2.0"
+
+[dependencies]
+serde.workspace = true
+serde_json.workspace = true
+# 自带 SQLite 源码一起编译，不依赖系统库，三个平台行为一致
+rusqlite = { version = "0.41", features = ["bundled"] }
+image = { version = "0.25", default-features = false, features = ["png"] }
+md-5 = "0.10"
+sha1 = "0.10"
+sha2 = "0.10"

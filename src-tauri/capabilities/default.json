@@ -1,0 +1,15 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "default",
+  "description": "主窗口、剪贴板面板、截图和贴图窗口的权限",
+  "windows": ["main", "panel", "shot-*", "pin-*"],
+  "permissions": [
+    "core:default",
+    "core:window:allow-start-dragging",
+    "core:window:allow-set-theme",
+    "core:window:allow-show",
+    "core:window:allow-set-size",
+    "dialog:default",
+    "autostart:default"
+  ]
+}

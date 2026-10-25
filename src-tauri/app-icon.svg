@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffa53d"/>
+      <stop offset="1" stop-color="#f06424"/>
+    </linearGradient>
+  </defs>
+  <!-- macOS 图标网格：内容区 824×824，四周留白 -->
+  <rect x="100" y="100" width="824" height="824" rx="184" fill="url(#bg)"/>
+  <!-- 四格工具：方块、圆、方块、花括号 -->
+  <rect x="262" y="262" width="220" height="220" rx="52" fill="#ffffff"/>
+  <circle cx="652" cy="372" r="112" fill="#ffffff" fill-opacity="0.82"/>
+  <rect x="262" y="542" width="220" height="220" rx="52" fill="#ffffff" fill-opacity="0.82"/>
+  <path d="M612 552 C572 552 572 580 572 612 C572 640 556 652 532 652 C556 652 572 664 572 692 C572 724 572 752 612 752
+           M692 552 C732 552 732 580 732 612 C732 640 748 652 772 652 C748 652 732 664 732 692 C732 724 732 752 692 752"
+        fill="none" stroke="#ffffff" stroke-width="40" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
