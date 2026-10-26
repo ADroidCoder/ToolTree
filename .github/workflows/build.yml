@@ -66,9 +66,10 @@ jobs:
             files: |
               target/x86_64-apple-darwin/release/bundle/dmg/*.dmg
               target/x86_64-apple-darwin/release/bundle/macos/*.app.tar.gz*
-          # 用 22.04 打包：glibc 版本较老，装在更新的发行版上也能运行
+          # 截图库 xcap 依赖的 libspa 要用 PipeWire 1.0 以上的头文件编译，22.04 自带的 0.3.48 太老，
+          # 所以用 24.04 打包。代价是 glibc 2.39，比 Ubuntu 24.04 / Debian 13 / Fedora 40 更老的发行版跑不了
           - name: Linux
-            os: ubuntu-22.04
+            os: ubuntu-24.04
             arch: linux
             files: |
               target/release/bundle/deb/*.deb*

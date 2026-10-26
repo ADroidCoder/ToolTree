@@ -86,7 +86,7 @@
 
 - [Rust](https://rustup.rs/) 1.85 或更新
 - [Node.js](https://nodejs.org/) 22 或更新
-- 仅 Linux：`libwebkit2gtk-4.1-dev`、`libgtk-3-dev`、`librsvg2-dev`、`libayatana-appindicator3-dev`、`libxdo-dev`，以及截图要的 `libxcb1-dev`、`libxrandr-dev`、`libpipewire-0.3-dev`、`libwayland-dev`、`libegl-dev`、`libgbm-dev`、`libclang-dev`（Ubuntu / Debian 的包名）
+- 仅 Linux：`libwebkit2gtk-4.1-dev`、`libgtk-3-dev`、`librsvg2-dev`、`libayatana-appindicator3-dev`、`libxdo-dev`，以及截图要的 `libxcb1-dev`、`libxrandr-dev`、`libpipewire-0.3-dev`、`libwayland-dev`、`libegl-dev`、`libgbm-dev`、`libclang-dev`（Ubuntu / Debian 的包名；需要 PipeWire 1.0 以上，Ubuntu 24.04 或更新）
 - 仅 Windows：[WebView2](https://developer.microsoft.com/microsoft-edge/webview2/)（Windows 10/11 一般自带）和 Visual Studio C++ 生成工具
 
 ```bash

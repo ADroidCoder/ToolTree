@@ -86,7 +86,7 @@ Global shortcuts can be changed in Settings. Tool search supports pinyin and ini
 
 - [Rust](https://rustup.rs/) 1.85 or later
 - [Node.js](https://nodejs.org/) 22 or later
-- Linux only: `libwebkit2gtk-4.1-dev`, `libgtk-3-dev`, `librsvg2-dev`, `libayatana-appindicator3-dev`, `libxdo-dev`, plus `libxcb1-dev`, `libxrandr-dev`, `libpipewire-0.3-dev`, `libwayland-dev`, `libegl-dev`, `libgbm-dev` and `libclang-dev` for screenshots (Ubuntu / Debian package names)
+- Linux only: `libwebkit2gtk-4.1-dev`, `libgtk-3-dev`, `librsvg2-dev`, `libayatana-appindicator3-dev`, `libxdo-dev`, plus `libxcb1-dev`, `libxrandr-dev`, `libpipewire-0.3-dev`, `libwayland-dev`, `libegl-dev`, `libgbm-dev` and `libclang-dev` for screenshots (Ubuntu / Debian package names; needs PipeWire 1.0 or later, i.e. Ubuntu 24.04 or newer)
 - Windows only: [WebView2](https://developer.microsoft.com/microsoft-edge/webview2/) (included with Windows 10/11) and the Visual Studio C++ build tools
 
 ```bash
