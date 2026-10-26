@@ -12,7 +12,7 @@ use std::time::Duration;
 use tauri::ipc::Response;
 use tauri::menu::{CheckMenuItem, Menu, MenuItem, PredefinedMenuItem};
 use tauri::tray::TrayIconBuilder;
-use tauri::{AppHandle, Emitter, Manager, PhysicalPosition, RunEvent, State, WindowEvent};
+use tauri::{AppHandle, Emitter, Manager, PhysicalPosition, State, WindowEvent};
 use tauri_plugin_global_shortcut::{GlobalShortcutExt, Shortcut, ShortcutState};
 use tooltree_core::clips::{Clip, ClipStore, Query};
 use tooltree_core::hash::{self, Hashes};
@@ -475,7 +475,7 @@ pub fn run() {
     app.run(|app, e| {
         // macOS 上点 Dock 图标时重新打开主窗口
         #[cfg(target_os = "macos")]
-        if let RunEvent::Reopen { .. } = e {
+        if let tauri::RunEvent::Reopen { .. } = e {
             show_main_window(app);
         }
         let _ = (app, e);

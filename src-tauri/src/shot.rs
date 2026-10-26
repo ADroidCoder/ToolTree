@@ -169,13 +169,13 @@ fn list_windows() -> Vec<(Rect, u32)> {
 /// 截下所有屏幕，同时取窗口列表。
 /// skip_self：主窗口刚被藏起来时，系统的窗口列表里可能还有它，把自己的窗口都排除掉
 fn capture(skip_self: bool) -> Result<Vec<Screen>, String> {
-    let monitors = xcap::Monitor::all().map_err(err)?;
+    let count = xcap::Monitor::all().map_err(err)?.len();
     let windows = std::thread::spawn(list_windows);
-    // 每个屏幕一个线程同时截
-    let handles: Vec<_> = monitors
-        .into_iter()
-        .map(|m| {
+    // 每个屏幕一个线程同时截。Windows 上 Monitor 里是句柄，不能传给别的线程，所以各线程按序号自己取
+    let handles: Vec<_> = (0..count)
+        .map(|i| {
             std::thread::spawn(move || -> Result<Screen, String> {
+                let m = xcap::Monitor::all().map_err(err)?.into_iter().nth(i).ok_or("显示器数量变了，请重试")?;
                 let image = m.capture_image().map_err(err)?;
                 let scale = m.scale_factor().unwrap_or(1.0) as f64;
                 let to_css = if cfg!(target_os = "macos") { 1.0 } else { 1.0 / scale };
