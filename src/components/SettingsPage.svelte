@@ -1,7 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { listen } from "@tauri-apps/api/event";
-  import { getVersion } from "@tauri-apps/api/app";
   import { enable, disable, isEnabled } from "@tauri-apps/plugin-autostart";
   import ShortcutInput from "./ShortcutInput.svelte";
   import Seg from "./Seg.svelte";
@@ -10,11 +9,11 @@
   import { setTheme, settings, type Theme } from "../lib/settings.svelte";
   import { toast } from "../lib/store.svelte";
   import { isMac } from "../lib/util";
+  import { checkUpdate, updater } from "../lib/updater.svelte";
 
   let config = $state<Config | null>(null);
   let autostart = $state(false);
   let trusted = $state(true);
-  let version = $state("");
   let ignoreText = $state("");
 
   async function load() {
@@ -26,7 +25,6 @@
   onMount(() => {
     load();
     isEnabled().then((v) => (autostart = v)).catch(() => {});
-    getVersion().then((v) => (version = v));
     // 从系统设置授权回来后刷新状态
     const onFocus = () => api.accessibilityTrusted().then((v) => (trusted = v));
     addEventListener("focus", onFocus);
@@ -139,8 +137,14 @@
         <input type="checkbox" checked={autostart} onchange={(e) => setAutostart(e.currentTarget.checked)} />
       </div>
       <div class="row">
-        <span>{t("版本")}</span>
-        <span class="faint">ToolTree {version}</span>
+        <span>{t("版本")}<small>ToolTree {updater.version}{updater.update ? " · " + t("新版本 {0}", updater.update.version) : ""}</small></span>
+        {#if updater.update}
+          <button class="primary" onclick={() => (updater.open = true)}>{t("查看更新")}</button>
+        {:else}
+          <button onclick={() => checkUpdate(true)} disabled={updater.status === "checking"}>
+            {updater.status === "checking" ? t("正在检查…") : t("检查更新")}
+          </button>
+        {/if}
       </div>
     </section>
   </div>

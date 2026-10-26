@@ -7,6 +7,8 @@
   import Palette from "./components/Palette.svelte";
   import ClipboardPage from "./components/ClipboardPage.svelte";
   import SettingsPage from "./components/SettingsPage.svelte";
+  import UpdateDialog from "./components/UpdateDialog.svelte";
+  import { startUpdater, updater } from "./lib/updater.svelte";
   import { app, openPage, openTool } from "./lib/store.svelte";
   import { applyTheme, watchSystemTheme } from "./lib/settings.svelte";
   import { syncBackendLang, watchLang } from "./lib/i18n.svelte";
@@ -20,6 +22,7 @@
     syncBackendLang();
     const stopTheme = watchSystemTheme();
     const stopLang = watchLang();
+    startUpdater();
     // 全局快捷键、托盘菜单、剪贴板面板发来的
     const a = listen("open-palette", () => (app.palette = true));
     const b = listen<{ tool: string | null; input: string | null }>("open-tool", (e) => {
@@ -83,6 +86,10 @@
 
 {#if app.palette}
   <Palette />
+{/if}
+
+{#if updater.open && updater.update}
+  <UpdateDialog />
 {/if}
 
 <div class="toasts">

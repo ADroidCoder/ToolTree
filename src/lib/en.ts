@@ -309,6 +309,24 @@ const en: Record<string, string> = {
   "黑色文字": "Black text",
   "AA 大号字": "AA large",
   "不合格": "Fail",
+
+  // 自动更新
+  "新版本 {0}": "Version {0} available",
+  "查看更新内容并安装": "See what's new and install",
+  "发现新版本 {0}": "ToolTree {0} is available",
+  "当前版本 {0}": "You have {0}",
+  "正在下载… {0} / {1} MB": "Downloading… {0} / {1} MB",
+  "正在下载…": "Downloading…",
+  "正在安装，完成后会自动重启…": "Installing — the app will restart when done…",
+  "更新失败：{0}": "Update failed: {0}",
+  "以后再说": "Later",
+  "重试": "Retry",
+  "立即更新并重启": "Update & Restart",
+  "已经是最新版本 {0}": "You're up to date ({0})",
+  "检查更新失败：{0}": "Couldn't check for updates: {0}",
+  "查看更新": "View Update",
+  "检查更新": "Check for Updates",
+  "正在检查…": "Checking…",
 };
 
 export default en;

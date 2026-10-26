@@ -1,9 +1,10 @@
 <script lang="ts">
-  import { ClipboardList, House, Scissors, Search, Settings, Star } from "@lucide/svelte";
+  import { ArrowUpCircle, ClipboardList, House, Scissors, Search, Settings, Star } from "@lucide/svelte";
   import { api } from "../lib/api";
   import { app, openPage, openTool } from "../lib/store.svelte";
   import { t } from "../lib/i18n.svelte";
   import { isMac } from "../lib/util";
+  import { updater } from "../lib/updater.svelte";
   import { TOOLS, findTool } from "../tools/registry";
   import { CATEGORIES } from "../tools/types";
 
@@ -38,6 +39,11 @@
     {/each}
   </div>
 
+  {#if updater.update}
+    <button class="item update" onclick={() => (updater.open = true)} title={t("查看更新内容并安装")}>
+      <ArrowUpCircle size={15} />{t("新版本 {0}", updater.update.version)}
+    </button>
+  {/if}
   <button class="item settings" class:on={app.page === "settings"} onclick={() => openPage("settings")}><Settings size={15} />{t("设置")}</button>
 </nav>
 
@@ -105,8 +111,13 @@
     background: var(--bg-selected);
     color: var(--text);
   }
-  .settings {
+  .settings,
+  .update {
     width: auto;
     margin: 6px 8px 10px;
+  }
+  .update {
+    margin-bottom: 0;
+    color: var(--accent);
   }
 </style>

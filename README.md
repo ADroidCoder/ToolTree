@@ -2,90 +2,144 @@
 
 # ToolTree
 
-**免费、开源的开发者工具箱：常用开发工具 + 剪贴板历史 + 截图，支持 macOS、Windows 和 Linux。**
+**A free, open-source developer toolbox for macOS, Windows and Linux: everyday dev tools, clipboard history and screenshots.**
 
-基于 Rust 和 Tauri 构建，常驻托盘，全局快捷键随时唤起。所有处理都在本地完成，不上传任何数据。
+Built with Rust and Tauri. Lives in the menu bar / tray and opens from anywhere with a global shortcut. Everything runs locally — no data ever leaves your machine.
+
+[![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
+![Platforms](https://img.shields.io/badge/platform-macOS%20%7C%20Windows%20%7C%20Linux-lightgrey)
+
+English · [简体中文](README.zh-CN.md)
+
+[**Download**](https://github.com/ADroidCoder/ToolTree/releases/latest) · [Features](#features) · [Building from source](#building-from-source)
 
 </div>
 
-## 功能
+## Download
 
-### 开发工具
+Get the latest installer from the [**Releases page**](https://github.com/ADroidCoder/ToolTree/releases/latest).
 
-| 分类 | 工具 |
+| Platform | File |
 |---|---|
-| 格式与转换 | JSON（格式化、压缩、转义、排序、转 YAML、生成 TypeScript 类型）、进制转换（BigInt）、颜色转换（HEX / RGB / HSL / HSV、对比度检查） |
-| 编码解码 | Base64（文本、文件、图片预览）、URL 编解码（拆解网址和参数）、JWT 解析（过期时间、HMAC 签名校验） |
-| 生成与加密 | UUID v4 / v7、ULID、NanoID（含时间解析），哈希（MD5、SHA 系列、文件哈希、HMAC） |
-| 文本 | 文本对比（行内差异高亮）、正则测试（常用正则库、替换预览）、命名转换和字数统计 |
-| 时间 | 时间戳转换（秒、毫秒、微秒、纳秒，多时区） |
+| macOS (Apple Silicon) | `ToolTree_<version>_aarch64.dmg` |
+| macOS (Intel) | `ToolTree_<version>_x64.dmg` |
+| Windows 10 / 11 (x64) | `ToolTree_<version>_x64-setup.exe` or `ToolTree_<version>_x64_en-US.msi` |
+| Linux (x64) | `ToolTree_<version>_amd64.deb` (Ubuntu, Debian), `ToolTree-<version>-1.x86_64.rpm` (Fedora, openSUSE) or `ToolTree_<version>_amd64.AppImage` (other distros — make it executable and run it) |
 
-### 剪贴板历史
+> [!NOTE]
+> The installers are not code-signed yet.
+> - **macOS**: if macOS says the app "is damaged" or "can't be opened", run `xattr -cr /Applications/ToolTree.app` once in Terminal, or right-click the app and choose Open.
+> - **Windows**: if SmartScreen appears, click **More info → Run anyway**.
 
-- 自动记录复制的文本、图片和文件，相同内容只保留一条
-- 搜索、按类型筛选、置顶；按条数和天数自动清理
-- **自动识别内容**：复制的是 JSON、时间戳、JWT、Base64、网址、颜色……会标出类型，一键用对应工具打开
-- 快捷键弹出面板，回车直接粘贴到之前的应用
-- 不记录密码管理器标记为隐藏的内容，可以设置忽略的应用
+## Features
 
-### 截图
+### Developer tools
 
-- 悬停自动识别窗口，单击选中整个窗口；拖动自由框选，拖动边角调整大小，方向键微调
-- 标注：矩形、椭圆、箭头、画笔、文字、马赛克、序号，可选颜色和粗细，`⌘Z` 撤销
-- 放大镜显示坐标和颜色，没选区域时按 `C` 复制鼠标位置的颜色
-- 回车或双击复制，`⌘S` 保存，`F3` 钉在桌面上（贴图可以拖动、滚轮缩放、双击关闭）
-- 多显示器、Retina 屏按原始分辨率导出；框选时画面是静止的，视频和动画不会影响结果
-
-> macOS 上截图需要在 系统设置 → 隐私与安全性 → 屏幕录制 里允许 ToolTree。
-
-### 快捷键
-
-| 快捷键 | 作用 |
+| Category | Tools |
 |---|---|
-| `⌥Space`（Windows / Linux：`Ctrl+Alt+Space`） | 在任何地方打开 ToolTree 并搜索工具 |
-| `⌘⇧V`（Windows / Linux：`Ctrl+Shift+V`） | 弹出剪贴板历史面板 |
-| `⌘⇧1`（Windows / Linux：`F1`） | 截图 |
-| `⌘K` | 在主窗口里搜索工具，粘贴内容可以自动识别 |
+| Format & convert | JSON (format, minify, escape, sort keys, to YAML, generate TypeScript types), number bases (BigInt), colors (HEX / RGB / HSL / HSV, contrast check) |
+| Encode & decode | Base64 (text, files, image preview), URL encode / decode (breaks down the URL and query), JWT decoder (expiry, HMAC signature check) |
+| Generate & hash | UUID v4 / v7, ULID, NanoID (with timestamp decoding), hashes (MD5, SHA family, file hashes, HMAC) |
+| Text | Text diff (inline highlights), regex tester (common pattern library, replace preview), case conversion and word count |
+| Time | Timestamp converter (s, ms, µs, ns, multiple time zones) |
 
-全局快捷键可以在设置里修改。工具搜索支持拼音和首字母，比如 `zz` 找到正则测试、`sjc` 找到时间戳。
+### Clipboard history
 
-> macOS 上“选中后直接粘贴”需要在 系统设置 → 隐私与安全性 → 辅助功能 里允许 ToolTree。
+- Records copied text, images and files automatically; identical content is kept once
+- Search, filter by type, pin items; old items are cleaned up by count and age
+- **Content detection**: JSON, timestamps, JWTs, Base64, URLs, colors… are labelled and open in the matching tool with one click
+- Pop up the panel with a shortcut and press Enter to paste straight into the previous app
+- Skips content that password managers mark as concealed; you can also ignore specific apps
 
-## 从源码构建
+### Screenshots
 
-需要 [Rust](https://rustup.rs) 和 Node.js 22+。
+- Hover to detect windows, click to select a whole window; drag to select any region, drag the edges to resize, nudge with arrow keys
+- Annotate: rectangle, ellipse, arrow, pen, text, mosaic and numbered markers, with color and size options; `⌘Z` to undo
+- The magnifier shows coordinates and color; press `C` with no selection to copy the color under the cursor
+- Enter or double-click to copy, `⌘S` to save, `F3` to pin to the desktop (pins can be dragged, zoomed with the scroll wheel and closed with a double-click)
+- Multiple monitors; Retina screens export at full resolution. The screen is frozen while you select, so videos and animations don't get in the way
+
+> On macOS, screenshots need permission under System Settings → Privacy & Security → Screen Recording.
+
+### Keyboard shortcuts
+
+| Shortcut | Action |
+|---|---|
+| `⌥Space` (Windows / Linux: `Ctrl+Alt+Space`) | Open ToolTree from anywhere and search tools |
+| `⌘⇧V` (Windows / Linux: `Ctrl+Shift+V`) | Show the clipboard history panel |
+| `⌘⇧1` (Windows / Linux: `F1`) | Take a screenshot |
+| `⌘K` | Search tools in the main window; pasted content is detected automatically |
+
+Global shortcuts can be changed in Settings. Tool search supports pinyin and initials, e.g. `zz` finds the regex tester and `sjc` finds the timestamp converter.
+
+> On macOS, "paste after selecting" needs permission under System Settings → Privacy & Security → Accessibility.
+
+### App
+
+- **Dark / light / system** appearance and a **Chinese / English interface** (follows the system language by default, switchable in Settings).
+- Launch at login; on startup it waits quietly in the menu bar (tray).
+- **Automatic updates**: checks GitHub Releases in the background, shows a notice at the bottom of the sidebar when a new version is out, and installs and restarts in one click. You can also check manually in Settings → General. Update packages are signed and verified before installing.
+
+## Building from source
+
+**Requirements**
+
+- [Rust](https://rustup.rs/) 1.85 or later
+- [Node.js](https://nodejs.org/) 22 or later
+- Linux only: `libwebkit2gtk-4.1-dev`, `libgtk-3-dev`, `librsvg2-dev`, `libayatana-appindicator3-dev`, `libxdo-dev`, plus `libxcb1-dev`, `libxrandr-dev`, `libpipewire-0.3-dev`, `libwayland-dev`, `libegl-dev`, `libgbm-dev` and `libclang-dev` for screenshots (Ubuntu / Debian package names)
+- Windows only: [WebView2](https://developer.microsoft.com/microsoft-edge/webview2/) (included with Windows 10/11) and the Visual Studio C++ build tools
 
 ```bash
+git clone https://github.com/ADroidCoder/ToolTree.git
+cd ToolTree
 npm install
-npm run tauri dev      # 开发
-npm run tauri build    # 打包
+
+npm run tauri dev      # run in development mode
+npm run tauri build    # build installers
 ```
 
-测试：
+**Tests**
 
 ```bash
-cargo test -p tooltree-core   # 剪贴板存储、哈希
-npm test                      # 内容识别、各工具的转换逻辑、截图标注
-npm run check                 # 类型检查
+cargo test -p tooltree-core   # clipboard storage, hashing
+npm test                      # content detection, tool conversions, screenshot annotations
+npm run check                 # type check
 ```
 
-## 新增一个工具
+**Releases** are built by [GitHub Actions](.github/workflows/build.yml):
 
-在 `src/tools/` 下建一个目录，放 `index.ts`（名字、分类、图标、搜索关键词）和 `Tool.svelte`，会自动出现在侧边栏和搜索里，不需要改其他地方。参考 `src/tools/radix/`。
+1. Set the new version in `src-tauri/tauri.conf.json`, `src-tauri/Cargo.toml` and `package.json` (all three must match; CI checks this).
+2. Commit, then push a tag: `git tag v0.2.0 && git push origin v0.2.0`.
+3. CI builds installers for Windows, both kinds of Mac and Linux, publishes a Release and attaches `latest.json`, so installed copies are offered the update.
 
-如果这个工具能识别某种剪贴板内容，在 `src/lib/detect.ts` 里加一条规则。
+Before the first release, add the updater signing key under the repository's Settings → Secrets and variables → Actions: `TAURI_SIGNING_PRIVATE_KEY` (the contents of the private key file) and `TAURI_SIGNING_PRIVATE_KEY_PASSWORD` (its password). If the key is lost, installed versions can never receive updates again, so keep a backup.
 
-## 项目结构
+Ordinary pushes only run the tests. Running the workflow by hand from the Actions page builds installers without publishing; download them from that run's Artifacts.
+
+## Adding a tool
+
+Create a folder under `src/tools/` with an `index.ts` (name, category, icon, search keywords) and a `Tool.svelte`. It shows up in the sidebar and search automatically — nothing else needs to change. See `src/tools/radix/` for an example.
+
+If the tool can recognise a kind of clipboard content, add a rule in `src/lib/detect.ts`.
+
+## Project layout
 
 ```
-crates/tooltree-core/   剪贴板历史存储（SQLite + PNG）、哈希，和界面无关，可以单独测试
-src-tauri/              托盘、全局快捷键、剪贴板监听、截屏、窗口
-src/tools/              每个工具一个目录，自动注册
-src/components/         主窗口界面
-src/windows/            剪贴板弹出面板、截图编辑、贴图
-src/lib/shot/           截图标注的形状和绘制（显示和导出共用）
+crates/tooltree-core/   Clipboard history storage (SQLite + PNG) and hashing; UI-independent and testable on its own
+src-tauri/              Tray, global shortcuts, clipboard watcher, screen capture, windows
+src/tools/              One folder per tool, registered automatically
+src/components/         Main window UI
+src/windows/            Clipboard pop-up panel, screenshot editor, pinned images
+src/lib/shot/           Annotation shapes and drawing (shared by display and export)
+tests/                  Frontend tests
 ```
 
-## 许可证
+**Tech stack:** Rust · [Tauri 2](https://tauri.app/) · [Svelte 5](https://svelte.dev/) · [xcap](https://github.com/nashaofu/xcap) · [arboard](https://github.com/1Password/arboard) · SQLite · TypeScript
 
-[Apache 2.0](LICENSE)
+## Contributing
+
+Issues and pull requests are welcome. Before opening a PR, please make sure `cargo test -p tooltree-core`, `npm test` and `npm run check` all pass.
+
+## License
+
+Licensed under the [Apache License 2.0](LICENSE): free for personal and commercial use, and you may modify and redistribute it. Redistributions must keep the copyright and license notices and state any changes made.

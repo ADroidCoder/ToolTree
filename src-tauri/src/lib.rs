@@ -389,6 +389,8 @@ fn setup_tray(app: &AppHandle) -> tauri::Result<()> {
 pub fn run() {
     let app = tauri::Builder::default()
         .plugin(tauri_plugin_dialog::init())
+        .plugin(tauri_plugin_updater::Builder::new().build())
+        .plugin(tauri_plugin_process::init())
         .plugin(tauri_plugin_autostart::Builder::new().arg(HIDDEN_ARG).build())
         .plugin(
             tauri_plugin_global_shortcut::Builder::new()

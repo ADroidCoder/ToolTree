@@ -58,5 +58,16 @@
       "icons/icon.icns",
       "icons/icon.ico"
     ]
+  },
+  "plugins": {
+    "updater": {
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDNFNjc0MjI3NjhFNDBFM0MKUldROER1Um9KMEpuUHBqU0VMT2NxT3VEQzZ3cGp3S2hUUUhoNHg2QXpuTis5cGJBYXZNMC9EWGoK",
+      "endpoints": [
+        "https://github.com/ADroidCoder/ToolTree/releases/latest/download/latest.json"
+      ],
+      "windows": {
+        "installMode": "passive"
+      }
+    }
   }
 }
