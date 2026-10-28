@@ -33,6 +33,18 @@
 
 ## 功能
 
+### 启动器
+
+按 `⌥Space`（Windows / Linux：`Ctrl+Alt+Space`）在屏幕上方弹出搜索框，一个框搞定：
+
+- **打开应用**：显示应用图标，支持拼音和首字母（`wx` 找到微信、`vsc` 找到 Visual Studio Code），常用的排在前面
+- **查找文件**：按文件名搜用户目录；以 `f ` 开头只搜文件。macOS 用 Spotlight 索引，Windows 装了 [Everything](https://www.voidtools.com/) 时用它（需要把 `es.exe` 放进 PATH），Linux 用 `plocate` / `locate`，都没有时在用户目录里直接找
+- **计算器**：输入 `12*8+3`、`2^10`、`sqrt(2)`、`200*15%` 直接出结果，回车复制；全角符号和 × ÷ 也认
+- **工具和命令**：搜到的开发工具直接打开；粘贴 JSON、时间戳等内容会推荐对应的工具；还能截图、打开剪贴板历史
+- 回车打开，`⌘↵` 在访达里显示，`Esc` 先清空再关闭；搜索框空着时列出最近用过的
+
+> 应用图标目前只在 macOS 上显示，Windows 和 Linux 上用通用图标。
+
 ### 开发工具
 
 | 分类 | 工具 |
@@ -65,7 +77,7 @@
 
 | 快捷键 | 作用 |
 |---|---|
-| `⌥Space`（Windows / Linux：`Ctrl+Alt+Space`） | 在任何地方打开 ToolTree 并搜索工具 |
+| `⌥Space`（Windows / Linux：`Ctrl+Alt+Space`） | 打开启动器：搜索应用、文件和工具，也能算数 |
 | `⌘⇧V`（Windows / Linux：`Ctrl+Shift+V`） | 弹出剪贴板历史面板 |
 | `⌘⇧1`（Windows / Linux：`F1`） | 截图 |
 | `⌘K` | 在主窗口里搜索工具，粘贴内容可以自动识别 |
@@ -126,10 +138,10 @@ npm run check                 # 类型检查
 
 ```
 crates/tooltree-core/   剪贴板历史存储（SQLite + PNG）、哈希，和界面无关，可以单独测试
-src-tauri/              托盘、全局快捷键、剪贴板监听、截屏、窗口
+src-tauri/              托盘、全局快捷键、剪贴板监听、截屏、启动器（应用列表、文件搜索）、窗口
 src/tools/              每个工具一个目录，自动注册
 src/components/         主窗口界面
-src/windows/            剪贴板弹出面板、截图编辑、贴图
+src/windows/            启动器、剪贴板弹出面板、截图编辑、贴图
 src/lib/shot/           截图标注的形状和绘制（显示和导出共用）
 tests/                  前端测试
 ```

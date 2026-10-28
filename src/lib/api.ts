@@ -54,6 +54,19 @@ export interface Hashes {
   size: number;
 }
 
+/** 装了的应用。name 是显示的名字（可能是中文），alt 是另一个名字（一般是英文文件名） */
+export interface AppEntry {
+  name: string;
+  alt: string;
+  path: string;
+}
+
+export interface FileHit {
+  path: string;
+  name: string;
+  dir: boolean;
+}
+
 export const api = {
   configGet: () => invoke<Config>("config_get"),
   configSet: (config: Config) => invoke<void>("config_set", { config }),
@@ -83,5 +96,15 @@ export const api = {
   shotStart: (hideMain: boolean) => invoke<void>("shot_start", { hideMain }),
   openScreenRecordingSettings: () => invoke<void>("open_screen_recording_settings"),
   accessibilityTrusted: () => invoke<boolean>("accessibility_trusted"),
+
+  /** 收起启动器，切回打开它之前的应用 */
+  launcherHide: () => invoke<void>("launcher_hide"),
+  launcherApps: () => invoke<AppEntry[]>("launcher_apps"),
+  /** 应用、文件的图标（PNG）。只有 macOS 支持，其他系统会报错 */
+  launcherIcon: (path: string) => invoke<ArrayBuffer>("launcher_icon", { path }),
+  /** 按文件名搜文件，空格分开的每个词都要包含 */
+  launcherFiles: (query: string, limit: number) => invoke<FileHit[]>("launcher_files", { query, limit }),
+  /** 打开应用、文件；reveal 为 true 时在访达 / 资源管理器里显示 */
+  launcherOpen: (path: string, reveal = false) => invoke<void>("launcher_open", { path, reveal }),
   openAccessibilitySettings: () => invoke<void>("open_accessibility_settings"),
 };

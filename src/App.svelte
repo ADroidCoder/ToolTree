@@ -27,7 +27,7 @@
     const a = listen("open-palette", () => (app.palette = true));
     const b = listen<{ tool: string | null; input: string | null }>("open-tool", (e) => {
       const { tool, input } = e.payload;
-      if (tool === "clipboard") openPage("clipboard");
+      if (tool === "clipboard" || tool === "settings" || tool === "home") openPage(tool);
       else if (tool) openTool(tool, input ?? undefined);
     });
     const c = listen<string>("toast", (e) => toast(e.payload, "error"));

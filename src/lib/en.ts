@@ -310,6 +310,24 @@ const en: Record<string, string> = {
   "AA 大号字": "AA large",
   "不合格": "Fail",
 
+  // 启动器
+  "启动器": "Launcher",
+  "在任何地方搜索应用、文件和工具，也能直接算数": "Search apps, files and tools from anywhere, or do quick math",
+  "搜索应用、文件和工具，或者输入算式": "Search apps, files and tools, or type a calculation",
+  "计算": "Calculator",
+  "识别到的内容": "Detected",
+  "应用": "Apps",
+  "工具": "Tools",
+  "命令": "Commands",
+  "回车复制结果": "Press Enter to copy",
+  "打开 ToolTree": "Open ToolTree",
+  "ToolTree 设置": "ToolTree Settings",
+  "打开": "Open",
+  "在访达中显示": "Show in Finder",
+  "打开所在文件夹": "Show in Folder",
+  "输入应用名、文件名、工具名，或者 12*8+3 这样的算式": "Type an app, file or tool name, or a calculation like 12*8+3",
+  "以“f ”开头只搜文件": "Start with “f ” to search files only",
+
   // 自动更新
   "新版本 {0}": "Version {0} available",
   "查看更新内容并安装": "See what's new and install",

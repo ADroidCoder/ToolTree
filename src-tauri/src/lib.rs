@@ -1,5 +1,6 @@
 mod clipboard;
 mod config;
+mod launcher;
 mod platform;
 mod shot;
 
@@ -210,6 +211,7 @@ pub(crate) fn show_main_window(app: &AppHandle) {
 #[tauri::command]
 fn show_main(app: AppHandle, tool: Option<String>, input: Option<String>) {
     hide_panel(&app);
+    launcher::hide(&app, false);
     show_main_window(&app);
     if tool.is_some() {
         let _ = app.emit_to(MAIN, "open-tool", OpenTool { tool, input });
@@ -227,6 +229,15 @@ fn panel_hide(app: AppHandle) {
     hide_panel(&app);
 }
 
+/// 鼠标所在的屏幕
+pub(crate) fn cursor_monitor(app: &AppHandle) -> Option<tauri::Monitor> {
+    let cursor = app.cursor_position().ok()?;
+    app.available_monitors().unwrap_or_default().into_iter().find(|m| {
+        let (p, s) = (m.position(), m.size());
+        cursor.x >= p.x as f64 && cursor.x < (p.x + s.width as i32) as f64 && cursor.y >= p.y as f64 && cursor.y < (p.y + s.height as i32) as f64
+    })
+}
+
 /// 在鼠标所在的屏幕上、靠近鼠标的位置打开剪贴板面板；已经打开就关掉
 fn toggle_panel(app: &AppHandle) {
     let Some(w) = app.get_webview_window(PANEL) else { return };
@@ -237,15 +248,7 @@ fn toggle_panel(app: &AppHandle) {
     let state = app.state::<AppState>();
     *state.previous.lock().unwrap() = platform::remember_frontmost();
     if let (Ok(cursor), Ok(size)) = (app.cursor_position(), w.outer_size()) {
-        let monitor = app
-            .available_monitors()
-            .unwrap_or_default()
-            .into_iter()
-            .find(|m| {
-                let (p, s) = (m.position(), m.size());
-                cursor.x >= p.x as f64 && cursor.x < (p.x + s.width as i32) as f64 && cursor.y >= p.y as f64 && cursor.y < (p.y + s.height as i32) as f64
-            });
-        if let Some(m) = monitor {
+        if let Some(m) = cursor_monitor(app) {
             let area = m.work_area();
             let (min_x, min_y) = (area.position.x, area.position.y);
             let max_x = min_x + area.size.width as i32 - size.width as i32;
@@ -260,11 +263,6 @@ fn toggle_panel(app: &AppHandle) {
     let _ = w.show();
     let _ = w.set_focus();
     let _ = w.emit("panel-show", ());
-}
-
-fn open_launcher(app: &AppHandle) {
-    show_main_window(app);
-    let _ = app.emit_to(MAIN, "open-palette", ());
 }
 
 // ---- 全局快捷键 ----
@@ -300,7 +298,7 @@ fn register_shortcuts(app: &AppHandle) -> CmdResult<()> {
 fn on_shortcut(app: &AppHandle, sc: &Shortcut) {
     let action = app.state::<AppState>().shortcuts.lock().unwrap().iter().find(|(s, _)| s == sc).map(|(_, a)| *a);
     match action {
-        Some(Action::Launcher) => open_launcher(app),
+        Some(Action::Launcher) => launcher::toggle(app),
         Some(Action::Clipboard) => toggle_panel(app),
         Some(Action::Screenshot) => shot::start(app),
         None => {}
@@ -330,7 +328,7 @@ fn tray_menu(app: &AppHandle) -> tauri::Result<Menu<tauri::Wry>> {
         app,
         &[
             &MenuItem::with_id(app, "show", tr("打开 ToolTree", "Open ToolTree"), true, None::<&str>)?,
-            &MenuItem::with_id(app, "launcher", tr("搜索工具…", "Search Tools…"), true, None::<&str>)?,
+            &MenuItem::with_id(app, "launcher", tr("搜索…", "Search…"), true, None::<&str>)?,
             &MenuItem::with_id(app, "clips", tr("剪贴板历史", "Clipboard History"), true, None::<&str>)?,
             &MenuItem::with_id(app, "shot", tr("截图", "Screenshot"), true, None::<&str>)?,
             &PredefinedMenuItem::separator(app)?,
@@ -353,7 +351,7 @@ fn setup_tray(app: &AppHandle) -> tauri::Result<()> {
         .menu(&tray_menu(app)?)
         .on_menu_event(|app, e| match e.id.as_ref() {
             "show" => show_main_window(app),
-            "launcher" => open_launcher(app),
+            "launcher" => launcher::toggle(app),
             "clips" => toggle_panel(app),
             "shot" => shot::start(app),
             "record" => {
@@ -417,6 +415,7 @@ pub fn run() {
             watcher.prune();
             watcher.start(app.handle().clone());
             app.manage(shot::ShotState::default());
+            app.manage(launcher::LauncherState::default());
             setup_tray(app.handle())?;
             shot::prepare(app.handle());
             if let Err(e) = register_shortcuts(app.handle()) {
@@ -437,6 +436,7 @@ pub fn run() {
             WindowEvent::Focused(false) if w.label() == PANEL => {
                 let _ = w.hide();
             }
+            WindowEvent::Focused(false) if w.label() == launcher::LAUNCHER => launcher::on_blur(w.app_handle()),
             _ => {}
         })
         .invoke_handler(tauri::generate_handler![
@@ -468,6 +468,11 @@ pub fn run() {
             shot::pin_action,
             show_main,
             panel_hide,
+            launcher::launcher_hide,
+            launcher::launcher_apps,
+            launcher::launcher_icon,
+            launcher::launcher_files,
+            launcher::launcher_open,
         ])
         .build(tauri::generate_context!())
         .expect("启动失败");

@@ -80,7 +80,7 @@
       <section>
         <h2>{t("全局快捷键")}</h2>
         <div class="row">
-          <span>{t("搜索工具")}<small>{t("在任何地方打开 ToolTree 并搜索工具")}</small></span>
+          <span>{t("启动器")}<small>{t("在任何地方搜索应用、文件和工具，也能直接算数")}</small></span>
           <ShortcutInput value={config.launcherShortcut} onchange={(v) => save({ launcherShortcut: v })} />
         </div>
         <div class="row">

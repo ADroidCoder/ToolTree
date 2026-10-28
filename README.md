@@ -33,6 +33,18 @@ Get the latest installer from the [**Releases page**](https://github.com/ADroidC
 
 ## Features
 
+### Launcher
+
+Press `⌥Space` (Windows / Linux: `Ctrl+Alt+Space`) to bring up a search box near the top of the screen:
+
+- **Open apps**: with app icons, pinyin and initials support (`wx` finds 微信, `vsc` finds Visual Studio Code); the ones you use most rank first
+- **Find files** by name in your home folder; start with `f ` to search files only. Uses the Spotlight index on macOS, [Everything](https://www.voidtools.com/) on Windows when installed (put `es.exe` on your PATH), and `plocate` / `locate` on Linux, falling back to a direct scan of your home folder
+- **Calculator**: type `12*8+3`, `2^10`, `sqrt(2)` or `200*15%` for an instant result; Enter copies it
+- **Tools and commands**: open any dev tool; pasted JSON, timestamps and the like suggest the matching tool; take a screenshot or open clipboard history
+- Enter opens, `⌘↵` shows in Finder, `Esc` clears and then closes; with an empty box it lists what you used recently
+
+> App icons are currently shown on macOS only; Windows and Linux use a generic icon.
+
 ### Developer tools
 
 | Category | Tools |
@@ -65,7 +77,7 @@ Get the latest installer from the [**Releases page**](https://github.com/ADroidC
 
 | Shortcut | Action |
 |---|---|
-| `⌥Space` (Windows / Linux: `Ctrl+Alt+Space`) | Open ToolTree from anywhere and search tools |
+| `⌥Space` (Windows / Linux: `Ctrl+Alt+Space`) | Open the launcher: search apps, files and tools, or do quick math |
 | `⌘⇧V` (Windows / Linux: `Ctrl+Shift+V`) | Show the clipboard history panel |
 | `⌘⇧1` (Windows / Linux: `F1`) | Take a screenshot |
 | `⌘K` | Search tools in the main window; pasted content is detected automatically |
@@ -126,10 +138,10 @@ If the tool can recognise a kind of clipboard content, add a rule in `src/lib/de
 
 ```
 crates/tooltree-core/   Clipboard history storage (SQLite + PNG) and hashing; UI-independent and testable on its own
-src-tauri/              Tray, global shortcuts, clipboard watcher, screen capture, windows
+src-tauri/              Tray, global shortcuts, clipboard watcher, screen capture, launcher (apps, file search), windows
 src/tools/              One folder per tool, registered automatically
 src/components/         Main window UI
-src/windows/            Clipboard pop-up panel, screenshot editor, pinned images
+src/windows/            Launcher, clipboard pop-up panel, screenshot editor, pinned images
 src/lib/shot/           Annotation shapes and drawing (shared by display and export)
 tests/                  Frontend tests
 ```
