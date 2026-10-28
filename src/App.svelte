@@ -77,6 +77,7 @@
   <div class="notice">
     <b>{t("截图需要“屏幕录制”权限")}</b>
     <p>{t("在“系统设置 → 隐私与安全性 → 屏幕录制”里打开 ToolTree，然后重新启动 ToolTree。")}</p>
+    <p>{t("如果开关已经是打开的（比如刚更新过），先选中 ToolTree 点“−”删掉，再重新添加。")}</p>
     <div class="notice-actions">
       <button onclick={() => (needScreenPermission = false)}>{t("稍后")}</button>
       <button class="primary" onclick={() => api.openScreenRecordingSettings()}>{t("打开系统设置")}</button>

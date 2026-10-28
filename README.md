@@ -71,7 +71,7 @@ Press `⌥Space` (Windows / Linux: `Ctrl+Alt+Space`) to bring up a search box ne
 - Enter or double-click to copy, `⌘S` to save, `F3` to pin to the desktop (pins can be dragged, zoomed with the scroll wheel and closed with a double-click)
 - Multiple monitors; Retina screens export at full resolution. The screen is frozen while you select, so videos and animations don't get in the way
 
-> On macOS, screenshots need permission under System Settings → Privacy & Security → Screen Recording.
+> On macOS, screenshots need permission under System Settings → Privacy & Security → Screen Recording. After upgrading from 0.1.3 or earlier, remove ToolTree there (click “−”) and grant it again, and do the same under Accessibility; later updates keep the permission.
 
 ### Keyboard shortcuts
 

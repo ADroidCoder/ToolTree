@@ -125,6 +125,8 @@ const en: Record<string, string> = {
   "截图需要“屏幕录制”权限": "Screenshots need Screen Recording permission",
   "在“系统设置 → 隐私与安全性 → 屏幕录制”里打开 ToolTree，然后重新启动 ToolTree。":
     "Turn on ToolTree in System Settings → Privacy & Security → Screen Recording, then restart ToolTree.",
+  "如果开关已经是打开的（比如刚更新过），先选中 ToolTree 点“−”删掉，再重新添加。":
+    "If it's already turned on (for example right after an update), select ToolTree, click “−” to remove it, then add it again.",
   "稍后": "Later",
   "矩形": "Rectangle",
   "椭圆": "Ellipse",

@@ -80,6 +80,12 @@ jobs:
       # 自动更新包的签名私钥，在仓库 Settings → Secrets and variables → Actions 里配置
       TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
       TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+      # macOS 代码签名证书（自签名的 .p12，base64 编码）和它的密码。
+      # 没有固定的签名时，系统按程序文件的哈希认应用，每个版本都不一样，
+      # 用户给的“录屏”“辅助功能”权限一更新就失效。不用 APPLE_CERTIFICATE 这个名字：
+      # Tauri 看到它会自己导入，而它只认苹果开发者证书
+      MACOS_CERTIFICATE: ${{ secrets.MACOS_CERTIFICATE }}
+      MACOS_CERTIFICATE_PASSWORD: ${{ secrets.MACOS_CERTIFICATE_PASSWORD }}
     steps:
       - uses: actions/checkout@v4
       # 版本号不一致时，装好的新版本会以为自己还是旧版本，自动更新会一直提示，所以发版前先检查
@@ -94,6 +100,10 @@ jobs:
         run: |
           if [ -z "$TAURI_SIGNING_PRIVATE_KEY" ]; then
             echo "::error::仓库的 Secrets 里没有配置 TAURI_SIGNING_PRIVATE_KEY，发版需要它来给自动更新包签名"
+            exit 1
+          fi
+          if [ "$RUNNER_OS" = macOS ] && [ -z "$MACOS_CERTIFICATE" ]; then
+            echo "::error::仓库的 Secrets 里没有配置 MACOS_CERTIFICATE，没有它用户每次更新后都要重新授权录屏和辅助功能"
             exit 1
           fi
       - name: 安装 Linux 依赖
@@ -115,6 +125,22 @@ jobs:
         with:
           key: ${{ matrix.target }}
       - run: npm ci
+      # 把证书导入一个临时钥匙串，用证书指纹签名。自签名证书系统不信任，按名字找不到，按指纹可以
+      - name: 导入 macOS 签名证书
+        if: runner.os == 'macOS' && env.MACOS_CERTIFICATE != ''
+        run: |
+          kc="$RUNNER_TEMP/sign.keychain-db"
+          security create-keychain -p ci "$kc"
+          security set-keychain-settings -lut 21600 "$kc"
+          security unlock-keychain -p ci "$kc"
+          echo "$MACOS_CERTIFICATE" | base64 --decode > "$RUNNER_TEMP/cert.p12"
+          security import "$RUNNER_TEMP/cert.p12" -k "$kc" -P "$MACOS_CERTIFICATE_PASSWORD" -T /usr/bin/codesign
+          rm "$RUNNER_TEMP/cert.p12"
+          security set-key-partition-list -S apple-tool:,apple: -s -k ci "$kc" > /dev/null
+          security list-keychains -d user -s "$kc" $(security list-keychains -d user | tr -d '"')
+          id=$(security find-identity -p codesigning "$kc" | awk '/^ *1\)/ {print $2; exit}')
+          [ -n "$id" ] || { echo "::error::证书里没有找到签名身份"; exit 1; }
+          echo "APPLE_SIGNING_IDENTITY=$id" >> "$GITHUB_ENV"
       - name: 打包
         shell: bash
         run: |
@@ -123,6 +149,13 @@ jobs:
           # 有私钥时同时生成签过名的更新包；手动运行又没配置私钥时只打普通安装包
           [ -n "$TAURI_SIGNING_PRIVATE_KEY" ] && args+=(--config src-tauri/tauri.updater.conf.json)
           npx tauri build "${args[@]}"
+      - name: 检查 macOS 签名
+        if: runner.os == 'macOS' && env.MACOS_CERTIFICATE != ''
+        shell: bash
+        run: |
+          app=$(ls -d target/${{ matrix.target }}/release/bundle/macos/*.app | head -1)
+          codesign --verify --deep --strict "$app"
+          codesign -d -r- "$app" 2>&1 | tee /dev/stderr | grep -q "certificate leaf"
       # 两种 Mac 的更新包默认同名，上传到同一个 Release 会互相覆盖，按架构改名
       - name: 更新包按架构改名
         if: runner.os == 'macOS'
