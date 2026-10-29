@@ -3,6 +3,7 @@ mod config;
 mod launcher;
 mod platform;
 mod shot;
+mod translate;
 
 use clipboard::Watcher;
 use config::Config;
@@ -75,6 +76,14 @@ fn config_set(app: AppHandle, state: State<AppState>, config: Config) -> CmdResu
 fn set_lang(app: AppHandle, en: bool) {
     EN.store(en, Ordering::Relaxed);
     refresh_tray(&app);
+}
+
+// ---- 翻译 ----
+
+#[tauri::command]
+async fn translate(state: State<'_, AppState>, text: String, from: String, to: String) -> CmdResult<translate::Translated> {
+    let c = state.config.read().unwrap().translate.clone();
+    tauri::async_runtime::spawn_blocking(move || translate::translate(&c, &text, &from, &to)).await.map_err(err)?
 }
 
 // ---- 剪贴板历史 ----
@@ -455,6 +464,7 @@ pub fn run() {
             config_set,
             set_lang,
             shortcuts_pause,
+            translate,
             clip_list,
             clip_get,
             clip_pin,

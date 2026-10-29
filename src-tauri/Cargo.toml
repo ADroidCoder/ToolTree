@@ -1,6 +1,6 @@
 [package]
 name = "tooltree"
-version = "0.1.5"
+version = "0.1.6"
 description = "开发者工具箱：常用开发工具、剪贴板历史"
 edition = "2024"
 license = "Apache-2.0"
@@ -29,6 +29,13 @@ xcap = "0.9"
 image = { version = "0.25", default-features = false, features = ["png"] }
 # 截图保存的默认文件名用本地时间
 chrono = { version = "0.4", default-features = false, features = ["clock"] }
+# 翻译：调用各家的接口和签名
+ureq = { version = "2", features = ["json"] }
+hmac = "0.12"
+sha1 = "0.10"
+sha2 = "0.10"
+hex = "0.4"
+base64 = "0.22"
 
 [target.'cfg(target_os = "macos")'.dependencies]
 objc2 = "0.6"

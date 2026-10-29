@@ -43,6 +43,24 @@ export interface Config {
   autoPaste: boolean;
   /** 不记录这些应用里复制的内容（按应用名） */
   ignoreApps: string[];
+  translate: TranslateConfig;
+}
+
+/** 翻译用哪家，以及各家的密钥 */
+export interface TranslateConfig {
+  /** free（默认，空字符串也是）、tencent、aliyun、deepl */
+  provider: string;
+  tencentId: string;
+  tencentKey: string;
+  aliyunId: string;
+  aliyunSecret: string;
+  deeplKey: string;
+}
+
+export interface Translated {
+  text: string;
+  /** 识别出来的原文语言，服务没返回时为空 */
+  from: string;
 }
 
 export interface Hashes {
@@ -87,6 +105,9 @@ export const api = {
   clipPaste: (id: number) => invoke<boolean>("clip_paste", { id }),
   /** 把一段文本写进剪贴板（工具里的“复制”按钮） */
   copyText: (text: string) => invoke<void>("copy_text", { text }),
+
+  /** 语言用 zh、en 这种代码，from 可以是 auto */
+  translate: (text: string, from: string, to: string) => invoke<Translated>("translate", { text, from, to }),
 
   hashText: (text: string) => invoke<Hashes>("hash_text", { text }),
   hashFile: (path: string) => invoke<Hashes>("hash_file", { path }),

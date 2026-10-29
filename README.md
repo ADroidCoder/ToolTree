@@ -52,7 +52,7 @@ Press `⌥Space` (Windows / Linux: `Ctrl+Alt+Space`) to bring up a search box ne
 | Format & convert | JSON (format, minify, escape, sort keys, to YAML, generate TypeScript types), number bases (BigInt), colors (HEX / RGB / HSL / HSV, contrast check) |
 | Encode & decode | Base64 (text, files, image preview), URL encode / decode (breaks down the URL and query), JWT decoder (expiry, HMAC signature check) |
 | Generate & hash | UUID v4 / v7, ULID, NanoID (with timestamp decoding), hashes (MD5, SHA family, file hashes, HMAC) |
-| Text | Text diff (inline highlights), regex tester (common pattern library, replace preview), case conversion and word count |
+| Text | Text diff (inline highlights), regex tester (common pattern library, replace preview), case conversion and word count, translation (free by default, or your own Tencent Cloud / Alibaba Cloud / DeepL key) |
 | Time | Timestamp converter (s, ms, µs, ns, multiple time zones) |
 
 ### Clipboard history

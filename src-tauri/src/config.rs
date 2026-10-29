@@ -23,6 +23,20 @@ pub struct Config {
     pub auto_paste: bool,
     /// 不记录这些应用里复制的内容（按应用名，不区分大小写）
     pub ignore_apps: Vec<String>,
+    pub translate: TranslateConfig,
+}
+
+/// 翻译用哪家，以及各家的密钥
+#[derive(Clone, Debug, Default, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase", default)]
+pub struct TranslateConfig {
+    /// free（Google，不通时用 MyMemory）、tencent、aliyun、deepl
+    pub provider: String,
+    pub tencent_id: String,
+    pub tencent_key: String,
+    pub aliyun_id: String,
+    pub aliyun_secret: String,
+    pub deepl_key: String,
 }
 
 impl Default for Config {
@@ -39,6 +53,7 @@ impl Default for Config {
             auto_paste: true,
             // 密码管理器：它们大多会标记“隐藏内容”，本来就不会记录，这里再保险一下
             ignore_apps: vec!["1Password".into(), "Bitwarden".into(), "KeePassXC".into(), "Keychain Access".into(), "钥匙串访问".into()],
+            translate: TranslateConfig::default(),
         }
     }
 }

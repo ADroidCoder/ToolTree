@@ -119,6 +119,37 @@ const en: Record<string, string> = {
   "托盘": "system tray",
   "版本": "Version",
 
+  "翻译": "Translate",
+  "翻译服务": "Translation service",
+  "免费的不用密钥；国内连不上 Google 时会自动换成 MyMemory，它每天有免费额度":
+    "The free service needs no key. If Google can't be reached, MyMemory is used instead, which has a daily free quota.",
+  "在腾讯云控制台“访问管理 → API 密钥”里创建，机器翻译每月有免费额度":
+    "Create one under Cloud Access Management → API Keys in the Tencent Cloud console. Machine Translation has a monthly free quota.",
+  "在阿里云控制台“AccessKey 管理”里创建，并开通机器翻译服务，每月有免费额度":
+    "Create one under AccessKey Management in the Alibaba Cloud console and activate Machine Translation. It has a monthly free quota.",
+  "在 DeepL 账户的“API Keys”里复制，免费版每月 50 万字符": "Copy it from API Keys in your DeepL account. The free plan includes 500,000 characters a month.",
+
+  // 翻译工具
+  "中英互译和常用语言翻译，默认免费，也可以用腾讯云、阿里云、DeepL 的密钥":
+    "Translate between Chinese, English and other common languages. Free by default, or use your own Tencent Cloud, Alibaba Cloud or DeepL key.",
+  "免费（Google / MyMemory）": "Free (Google / MyMemory)",
+  "腾讯云": "Tencent Cloud",
+  "阿里云": "Alibaba Cloud",
+  "自动识别": "Detect language",
+  "自动（中英互译）": "Auto (Chinese ⇄ English)",
+  "英语": "English",
+  "日语": "Japanese",
+  "韩语": "Korean",
+  "法语": "French",
+  "德语": "German",
+  "西班牙语": "Spanish",
+  "俄语": "Russian",
+  "翻译服务，密钥在设置里填": "Translation service. Add API keys in Settings",
+  "原文（{0}）": "Source ({0})",
+  "译文（{0}）": "Translation ({0})",
+  "正在翻译…": "Translating…",
+  "输入或粘贴要翻译的内容，⌘/Ctrl+回车立即翻译": "Type or paste text to translate. Press ⌘/Ctrl+Enter to translate now",
+
   // 截图
   "截图": "Screenshot",
   "框选区域、标注，复制、保存或钉在桌面上": "Select an area, annotate, then copy, save or pin it",

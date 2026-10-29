@@ -10,15 +10,20 @@
   import { toast } from "../lib/store.svelte";
   import { isMac } from "../lib/util";
   import { checkUpdate, updater } from "../lib/updater.svelte";
+  import { PROVIDERS } from "../tools/translate/translate";
 
   let config = $state<Config | null>(null);
   let autostart = $state(false);
   let trusted = $state(true);
   let ignoreText = $state("");
+  /** 翻译密钥在输入框里改，离开输入框时才保存 */
+  let keys = $state({ tencentId: "", tencentKey: "", aliyunId: "", aliyunSecret: "", deeplKey: "" });
 
   async function load() {
     config = await api.configGet();
     ignoreText = config.ignoreApps.join("\n");
+    const { provider: _, ...k } = config.translate;
+    keys = k;
     trusted = await api.accessibilityTrusted();
   }
 
@@ -130,6 +135,43 @@
       </section>
     {/if}
 
+    {#if config}
+      {@const tc = config.translate}
+      <section>
+        <h2>{t("翻译")}</h2>
+        <div class="row">
+          <span>{t("翻译服务")}<small>{t("免费的不用密钥；国内连不上 Google 时会自动换成 MyMemory，它每天有免费额度")}</small></span>
+          <select value={tc.provider || "free"} onchange={(e) => save({ translate: { ...tc, provider: e.currentTarget.value } })}>
+            {#each PROVIDERS as p (p.value)}<option value={p.value}>{t(p.label)}</option>{/each}
+          </select>
+        </div>
+        {#if tc.provider === "tencent"}
+          <div class="row">
+            <span>SecretId<small>{t("在腾讯云控制台“访问管理 → API 密钥”里创建，机器翻译每月有免费额度")}</small></span>
+            <input class="key" spellcheck="false" bind:value={keys.tencentId} onblur={() => save({ translate: { ...tc, ...keys } })} />
+          </div>
+          <div class="row">
+            <span>SecretKey</span>
+            <input class="key" type="password" bind:value={keys.tencentKey} onblur={() => save({ translate: { ...tc, ...keys } })} />
+          </div>
+        {:else if tc.provider === "aliyun"}
+          <div class="row">
+            <span>AccessKey ID<small>{t("在阿里云控制台“AccessKey 管理”里创建，并开通机器翻译服务，每月有免费额度")}</small></span>
+            <input class="key" spellcheck="false" bind:value={keys.aliyunId} onblur={() => save({ translate: { ...tc, ...keys } })} />
+          </div>
+          <div class="row">
+            <span>AccessKey Secret</span>
+            <input class="key" type="password" bind:value={keys.aliyunSecret} onblur={() => save({ translate: { ...tc, ...keys } })} />
+          </div>
+        {:else if tc.provider === "deepl"}
+          <div class="row">
+            <span>{t("密钥")}<small>{t("在 DeepL 账户的“API Keys”里复制，免费版每月 50 万字符")}</small></span>
+            <input class="key" type="password" bind:value={keys.deeplKey} onblur={() => save({ translate: { ...tc, ...keys } })} />
+          </div>
+        {/if}
+      </section>
+    {/if}
+
     <section>
       <h2>{t("通用")}</h2>
       <div class="row">
@@ -211,7 +253,8 @@
     color: var(--text-faint);
     font-size: 11.5px;
   }
-  .row textarea {
+  .row textarea,
+  .row .key {
     width: 240px;
   }
   .warn {
