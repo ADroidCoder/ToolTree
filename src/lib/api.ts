@@ -70,6 +70,8 @@ export interface FileHit {
 export const api = {
   configGet: () => invoke<Config>("config_get"),
   configSet: (config: Config) => invoke<void>("config_set", { config }),
+  /** 录制快捷键期间暂停全局快捷键，录完再恢复 */
+  shortcutsPause: (paused: boolean) => invoke<void>("shortcuts_pause", { paused }),
 
   clipList: (query: ClipQuery) => invoke<Clip[]>("clip_list", { query }),
   clipGet: (id: number) => invoke<Clip | null>("clip_get", { id }),

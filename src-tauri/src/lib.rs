@@ -295,6 +295,17 @@ fn register_shortcuts(app: &AppHandle) -> CmdResult<()> {
     if errors.is_empty() { Ok(()) } else { Err(errors.join("\n")) }
 }
 
+/// 设置里录制快捷键时先把全局快捷键都停掉，不然按下已占用的组合键会被系统拦走，网页收不到
+#[tauri::command]
+fn shortcuts_pause(app: AppHandle, paused: bool) {
+    if paused {
+        let _ = app.global_shortcut().unregister_all();
+        app.state::<AppState>().shortcuts.lock().unwrap().clear();
+    } else {
+        let _ = register_shortcuts(&app);
+    }
+}
+
 fn on_shortcut(app: &AppHandle, sc: &Shortcut) {
     let action = app.state::<AppState>().shortcuts.lock().unwrap().iter().find(|(s, _)| s == sc).map(|(_, a)| *a);
     match action {
@@ -443,6 +454,7 @@ pub fn run() {
             config_get,
             config_set,
             set_lang,
+            shortcuts_pause,
             clip_list,
             clip_get,
             clip_pin,
