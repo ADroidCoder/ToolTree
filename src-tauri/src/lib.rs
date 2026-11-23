@@ -5,6 +5,7 @@ mod platform;
 mod shot;
 mod translate;
 
+use base64::Engine;
 use clipboard::Watcher;
 use config::Config;
 use std::path::PathBuf;
@@ -199,6 +200,52 @@ async fn hash_file(path: String) -> CmdResult<Hashes> {
     tauri::async_runtime::spawn_blocking(move || hash::hash_file(path.as_ref()).map_err(err))
         .await
         .map_err(err)?
+}
+
+#[tauri::command]
+fn qr_save(path: String, kind: String, data: String) -> CmdResult<()> {
+    let bytes = match kind.as_str() {
+        "png" => base64::engine::general_purpose::STANDARD
+            .decode(data)
+            .map_err(err)?,
+        "svg" => data.into_bytes(),
+        _ => return Err("不支持的二维码格式".into()),
+    };
+    std::fs::write(path, bytes).map_err(err)
+}
+
+#[tauri::command]
+fn qr_copy(data: String) -> CmdResult<()> {
+    let bytes = base64::engine::general_purpose::STANDARD
+        .decode(data)
+        .map_err(err)?;
+    let img = image::load_from_memory_with_format(&bytes, image::ImageFormat::Png)
+        .map_err(err)?
+        .to_rgba8();
+    shot::copy_image(&img)
+}
+
+#[cfg(test)]
+mod qr_tests {
+    use super::*;
+
+    #[test]
+    fn saves_png_and_svg() {
+        let dir = std::env::temp_dir().join(format!("tooltree-qr-test-{}", std::process::id()));
+        std::fs::create_dir_all(&dir).unwrap();
+        let svg = dir.join("test.svg");
+        qr_save(svg.to_string_lossy().into_owned(), "svg".into(), "<svg>test</svg>".into()).unwrap();
+        assert_eq!(std::fs::read_to_string(svg).unwrap(), "<svg>test</svg>");
+
+        let png = dir.join("test.png");
+        let data = base64::engine::general_purpose::STANDARD.encode([0x89, 0x50, 0x4e, 0x47]);
+        qr_save(png.to_string_lossy().into_owned(), "png".into(), data).unwrap();
+        assert_eq!(std::fs::read(png).unwrap(), [0x89, 0x50, 0x4e, 0x47]);
+        assert!(
+            qr_save(dir.join("test.txt").to_string_lossy().into_owned(), "txt".into(), String::new()).is_err()
+        );
+        std::fs::remove_dir_all(dir).unwrap();
+    }
 }
 
 // ---- 窗口 ----
@@ -480,6 +527,8 @@ pub fn run() {
             open_screen_recording_settings,
             hash_text,
             hash_file,
+            qr_save,
+            qr_copy,
             shot_start,
             shot::shot_info,
             shot::shot_image,

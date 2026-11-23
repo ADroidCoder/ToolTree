@@ -111,6 +111,8 @@ export const api = {
 
   hashText: (text: string) => invoke<Hashes>("hash_text", { text }),
   hashFile: (path: string) => invoke<Hashes>("hash_file", { path }),
+  qrSave: (path: string, kind: "png" | "svg", data: string) => invoke<void>("qr_save", { path, kind, data }),
+  qrCopy: (data: string) => invoke<void>("qr_copy", { data }),
 
   panelHide: () => invoke<void>("panel_hide"),
   /** 打开主窗口，tool 不为空时切到这个工具，input 作为它的输入 */

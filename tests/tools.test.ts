@@ -5,6 +5,7 @@ import { parseJson, sortKeys, toTypeScript } from "../src/tools/json/json.ts";
 import { formatInZone, guessUnit, parseInput } from "../src/tools/timestamp/time.ts";
 import { CASES, stats, words } from "../src/tools/case/case.ts";
 import { parseId, ulid, uuidV7 } from "../src/tools/uuid/ids.ts";
+import { qrOptions, qrVersion } from "../src/tools/qr/qr.ts";
 
 test("JSON 出错时给出行列", () => {
   const r = parseJson('{\n  "a": 1,\n}');
@@ -72,4 +73,19 @@ test("UUID v7 和 ULID 能取回生成时间", () => {
   assert.deepEqual(parseId(u), { kind: "ULID", time: ms });
   assert.deepEqual(parseId("6ba7b810-9dad-11d1-80b4-00c04fd430c8")?.version, 1);
   assert.equal(parseId("nope"), null);
+});
+
+test("二维码支持中文，并限制导出尺寸和边距", () => {
+  const options = qrOptions({ level: "Q", size: 4096, margin: -2, dark: "#112233", light: "#ffffff" });
+  assert.equal(options.width, 2048);
+  assert.equal(options.margin, 0);
+  assert.equal(options.errorCorrectionLevel, "Q");
+  assert.deepEqual(options.color, { dark: "#112233ff", light: "#ffffffff" });
+  assert.ok(qrVersion("你好，ToolTree：https://example.com/路径", "M") > 0);
+});
+
+test("二维码使用无效尺寸时回退到默认值", () => {
+  const options = qrOptions({ level: "M", size: Number.NaN, margin: Number.NaN, dark: "#000000", light: "#ffffff" });
+  assert.equal(options.width, 512);
+  assert.equal(options.margin, 4);
 });
